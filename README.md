@@ -1,2 +1,1 @@
-# MAGS
-Code for MAGS project
+# organoid_analysis

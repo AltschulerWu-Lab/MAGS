@@ -1,0 +1,78 @@
+# ==============================================================================
+# This config file defines setting parameters
+# ==============================================================================
+
+# ==================
+# Bfconvert Settings
+# ==================
+
+bfconvert_path: 
+  linux: progs/cluster/bftools/bfconvert
+  macosx: progs/mac/bftools/bfconvert
+
+bfconvert_formatter: _XY%s_Z%z_C%c.tiff
+bfconvert_formatter_time: _XY%s_Z%z_C%c_T%t.tiff
+
+bfconvert_tiff_pattern: /(?P<row>[A-Z]{1})(?P<col>[0-9]{2})/.*_XY(?P<fld>[0-9]*)_Z(?P<Z>[0-9]*)_(?P<ch>.*).tiff
+bfconvert_tiff_pattern_time: /(?P<row>[A-Z]{1})(?P<col>[0-9]{2})/.*_XY(?P<fld>[0-9]*)_Z(?P<Z>[0-9]*)_(?P<ch>.*)_T(?P<t>.*).tiff
+
+# =============
+# FIJI Settings
+# =============
+
+fiji_path: 
+  linux: progs/cluster/fiji/Fiji.app/ImageJ-linux64
+  macosx: progs/mac/fiji/Fiji.app/Contents/MacOS/ImageJ-macosx
+batch_tiff_macro: scripts/fiji_macros/batch_save_tiff.ijm 
+
+# ==================
+# Default File paths
+# ==================
+
+dropfile: 
+  filename: dropfield.csv # should be placed in same folder as datainfo.yml
+  done: done # should be a column header if dropfield check is done
+
+segdropfile:
+  filename: segdrop.csv
+
+# raw data
+impath:
+
+  # pyramid thumbs
+  pyr_path: preview/pyr
+  pyr_filename: '_well{row:s}{col:02d}_XY{fld:02d}_Z{z:01d}_{ch:s}_pyr.tiff'
+
+  # stitched well previews
+  well_preview_path: preview/well_stitched
+  well_preview_filename: '_well{row:s}{col:02d}_Z{z:01d}_{ch:s}_well_preview.tiff'
+
+  # segmentation path
+  seg_path: segmentation/{row:s}{col:02d}
+
+  crypt_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_cryptseg.tiff'
+  crypt_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_cryptoverlay.png'
+  dna_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_dnaseg.tiff'
+  dna_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_dnaoverlay.png'
+  edu_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_eduseg.tiff'
+  edu_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_eduoverlay.png'
+  ee_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_eeseg.tiff'
+  ee_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_eeoverlay.png'
+  goblet_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_gobletseg.tiff'
+  goblet_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_gobletoverlay.png'
+  paneth_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_panethseg.tiff'
+  paneth_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_panethoverlay.png'
+  singlelgr5_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_singlelgr5seg.tiff'
+  singlelgr5_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_singlelgr5overlay.png'
+  stem_objects_filename: '_well{row:s}{col:02d}_XY{fld:02d}_stemseg.tiff'
+  stem_overlay_filename: '_well{row:s}{col:02d}_XY{fld:02d}_stemoverlay.png'
+
+  # segmentation viz:
+  segviz_filename: '_well{row:s}{col:02d}_XY{fld:02d}_{{object_type:s}}.png'
+
+  # features path
+  feat_path: features
+  feat_filename: '_features.csv'
+
+  # output path
+  output_path: output

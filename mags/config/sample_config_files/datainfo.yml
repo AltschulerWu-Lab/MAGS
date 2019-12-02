@@ -1,0 +1,136 @@
+# ==============================================================================
+# This config file defines experimental information for the associated dataset
+# ==============================================================================
+exp_name: episcreen_exp3
+plate_num: 2
+plate_name: test_muc2_chra
+
+# ================================
+# Plate Info
+# ================================
+
+# Always check that this is correct
+data_type: uint12 
+
+field_num: 24
+field_start: 0
+field_map: # -1 is empty
+  [[-1, -1,   0,  1,  -1, -1],
+  [ -1,  5,   4,  3,   2, -1],
+  [  6,  7,   8,  9,  10, 11],
+  [ 17, 16,  15, 14,  13, 12],
+  [ -1, 18,  19, 20,  21, -1],
+  [ -1, -1,  23, 22,  -1, -1]]
+
+z_num: 2
+z_start: 0
+
+t_num: 1
+t_start: !!null # set to !!null if no z stack images
+
+channels:
+  C0: dna    # dapi
+  C1: chra   # fitc
+  C2: edu    # cy5
+  C3: chra   # fitc
+  C4: muc2   # tritc
+
+plate_map:
+  [[!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ], 
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , [control], !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ],
+  [!!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null , !!null ]]
+
+treatment_info: # !!UPDATE
+  wnt3a: 
+    name: WNT3a
+    unit: uM
+
+# ================================
+# File Info
+# ================================
+well_nd2_files: True
+
+# analysis folder
+path_prefix: /awlab/projects/2017_02_MAGS/organoid_analysis/organoid_analysis/tests/test_data/muc2_chra/tmp
+fname_prefix: test_muc2_chra
+
+# nd2 files folder
+microscope_path: /awlab/projects/2017_02_MAGS/organoid_analysis/organoid_analysis/tests/test_data/muc2_chra
+well_tag: _Well
+
+# raw data
+data_path: raw_data/{row:s}{col:02d}
+data_filename: '_well{row:s}{col:02d}_XY{fld:02d}_Z{z:01d}_{ch:s}.tiff'
+
+# output path
+output_path: output
+
+# ================================
+# Visualization
+# ================================
+
+# Sets color and scaling bounds for raw data visualization. 
+# Color keywords maps to specific LUT defined in code
+
+viz_settings:
+  dna:
+    thresh_lower: 10 #10
+    thresh_upper: 140 #180
+    color: blue
+    zplanes: 'all'
+  chra:
+    thresh_lower: 200 #40
+    thresh_upper: 200 #98
+    color: red
+    zplanes: 'all'
+  muc2:
+    thresh_lower: 10
+    thresh_upper: 70
+    color: green
+    zplanes: 'all'
+  edu: 
+    thresh_lower: 8 #8
+    thresh_upper: 60 #80
+    color: pink
+    zplanes: 'all'
+
+# ================================
+# Segmentation
+# ================================
+
+# Lists all objects to be segmented
+# marker: which channels to use for segmentation
+# zplanes: which z planes to use for segmentation
+
+seg_info:  
+  dna: 
+    marker: dna
+    zplanes: 'all'
+  edu:
+    marker: edu
+    zplanes: [0,1]
+  goblet:
+    marker: muc2
+    zplanes: 'all'
+  ee:
+    marker: chra
+    zplanes: 'all'
+  crypt: 
+    marker: lgr5
+    zplanes: 'all'
+  singlelgr5:
+    marker: lgr5
+    zplanes: 'all'
+  paneth: 
+    marker: lyz
+    zplanes: 'all'
+  stem:
+    marker: lgr5
+    zplanes: 'all'
+
+

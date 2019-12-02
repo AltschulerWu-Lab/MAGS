@@ -1,0 +1,202 @@
+# ==================
+# Crypt Segmentation
+# ==================
+
+crypt:
+  DNA_FACTOR: 0.3
+  THRESH: 0.07
+
+  MORPH_CLOSING_SZ: 4
+  MORPH_OPENING_SZ: 2
+  MIN_SZ: 400
+
+# ================
+# DNA Segmentation
+# ================
+
+dna:
+  
+  BILATERAL_SIGMA_COLOR: 0.05
+  BILATERAL_SIGMA_SPATIAL: 1
+
+  THRESHOLD_DOWN_FACTOR: 0.5
+  THRESHOLD_MODE_FACTOR: 2
+  THRESHOLD_MODE_FACTOR_HI: 0.3
+
+  OTSU_BINS: 1000
+
+  LOG_BRIGHT:
+    MIN_SIG: 1
+    MAX_SIG: 1
+    NUM_SIG: 1
+    THRESH: 0.3
+    OVERLAP: 0.5
+
+  LOG_BLOB:
+    MIN_SIG: 2
+    MAX_SIG: 3
+    NUM_SIG: 9
+    THRESH: 0.01
+    OVERLAP: 0.1
+
+  LOG_CLUMP:
+    MIN_SIG: 2
+    MAX_SIG: 2
+    NUM_SIG: 2
+    THRESH: 0.01
+    OVERLAP: 0
+
+  BRIGHT_SEEDS_SELEM_SZ: 2
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 15
+  WATERSHED_COMPACTNESS: 1000
+
+  SEG_DEBRIS_SZ: 15
+
+  SEG_SINGLE_MIN_SZ: 100 # min size of single cells
+  SEG_SINGLE_MAX_SZ: 250 # max size of single cells
+
+  SEG_CLUMP_SOLIDITY: 0.9
+
+  SEG_CLOSE_HOLES: 2
+
+# ================
+# EdU Segmentation
+# ================
+
+edu:
+  
+  BILATERAL_SIGMA_COLOR: 0.05
+  BILATERAL_SIGMA_SPATIAL: 1
+
+  THRESHOLD_DOWN_FACTOR: 0.75
+  THRESHOLD_MODE_FACTOR: 2
+  THRESHOLD_MODE_FACTOR_HI: 0.3
+
+  OTSU_BINS: 1000
+
+  LOG_BLOB:
+    MIN_SIG: 2
+    MAX_SIG: 3
+    NUM_SIG: 9
+    THRESH: 0
+    OVERLAP: 0.1
+
+  LOG_CLUMP:
+    MIN_SIG: 2
+    MAX_SIG: 2
+    NUM_SIG: 2
+    THRESH: 0
+    OVERLAP: 0.05
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 15
+  WATERSHED_COMPACTNESS: 1000
+
+  SEG_DEBRIS_SZ: 15
+
+  SEG_SINGLE_MIN_SZ: 75 # min size of single cells
+  SEG_SINGLE_MAX_SZ: 150 # max size of single cells
+
+  SEG_CLUMP_SOLIDITY: 0.9
+
+  SEG_CLOSE_HOLES: 2
+
+# ===============
+# EE Segmentation
+# ===============
+
+ee:
+  BILATERAL_SIGMA_COLOR: 0.05
+  BILATERAL_SIGMA_SPATIAL: 10
+
+  WTOPHAT_FILTER_SZ: 3
+
+  OTSU_BINS: 256
+
+  THRESH_LOW: 0.03
+  THRESH_HIGH: 0.1
+  THRESH_BOUNDARY: 0.1
+
+  LOG_BLOB:
+    MIN_SIG: 6
+    MAX_SIG: 15
+    NUM_SIG: 9
+    OVERLAP: 0.9
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 50
+  WATERSHED_COMPACTNESS: 1000
+
+# ===================
+# Goblet Segmentation
+# ===================
+
+goblet:
+  MEDIAN_FILTER_SZ: 3
+  CLOSING_FILTER_SZ: 3
+
+  OTSU_BINS: 1000
+
+  THRESHOLD_DOWN_FACTOR: 1
+  THRESHOLD_MODE_FACTOR: 2
+
+  LOG_BLOB: 
+    MIN_SIG: 5
+    MAX_SIG: 12
+    NUM_SIG: 7
+    THRESH: 0.01
+    OVERLAP: 0.2
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 50
+  WATERSHED_COMPACTNESS: 1000
+
+# ===================
+# Paneth Segmentation
+# ===================
+
+paneth:
+  BILATERAL_SIGMA_COLOR: 0.06
+  BILATERAL_SIGMA_SPATIAL: 10
+
+  WTOPHAT_FILTER_SZ: 3
+
+  OTSU_BINS: 256
+
+  THRESH_LOW: 0.03
+  THRESH_HIGH: 0.1
+  THRESH_BOUNDARY: 0.2
+
+  LOG_BLOB:
+    MIN_SIG: 5
+    MAX_SIG: 8
+    NUM_SIG: 8
+    OVERLAP: 0.3
+
+  WATERSHED_CONN: [[0,1,0],[1,1,1],[0,1,0]]
+  WATERSHED_MIN_SZ: 50
+  WATERSHED_COMPACTNESS: 1000
+
+# ========================
+# Single-Lgr5 Segmentation
+# ========================
+
+singlelgr5:
+  MEDIAN_FILTER_SZ: 2
+  MORPH_CLOSING_SZ: 2
+
+  LOG_BLOB:
+    MIN_SIG: 2
+    MAX_SIG: 3
+    NUM_SIG: 2
+    THRESH: 0.075
+    OVERLAP: 0
+
+# ========================
+# Stem Segmentation
+# ========================
+
+stem:
+  PARTIAL_RATIO: 1.5
