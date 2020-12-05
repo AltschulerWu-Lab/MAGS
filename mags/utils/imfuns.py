@@ -212,6 +212,34 @@ def remove_regions(im, labels, bg_val=0):
 
   return new_im
 
+def roc_rates(pos, neg):
+  '''Calculates the true positive rates, false positive rates, and thresholds for roc curve
+  
+  Args:
+    pos: values for the positive class
+    neg: values for the negative class
+    
+  Returns: true positive rates (list), false positive rates (list), thresholds (list) '''
+
+  all_values = [*pos, *neg]
+  thresholds = np.linspace(min(all_values), max(all_values), 100)
+  pos = np.array(pos)
+  neg = np.array(neg)
+  
+  tpr_list = []
+  fpr_list = []
+  for thresh in thresholds:
+    
+    true_pos = pos > thresh
+    tpr = sum(true_pos)/len(true_pos)
+    tpr_list.append(tpr)
+    
+    false_pos = neg > thresh
+    fpr = sum(false_pos)/len(false_pos)
+    fpr_list.append(fpr)
+      
+  return tpr_list, fpr_list, thresholds
+
 def stitch_well(wellmap, im_dic, empty_fld=-1):
 
   # check that ims are all same size
@@ -257,5 +285,24 @@ def subtract(im1, im2):
   im[im<0] = 0
 
   return im
+
+def youden_thresh(tpr, fpr, thresholds):
+    '''Calculates the youden threshold based on roc rates 
+    
+    Args:
+      tpr (list): true positive rates
+      fpr (list): false positive rates
+      thresholds (list): thresholds associated with tpr/fpr values
+    
+    Returns: youden threshold, tpr at threshold, fpr at threshold
+    '''
+    
+    tpr = np.array(tpr)
+    fpr = np.array(fpr)
+    optimal_idx = np.argmax(tpr - fpr)
+    optimal_threshold = thresholds[optimal_idx]
+    optimal_tpr = tpr[optimal_idx]
+    optimal_fpr = fpr[optimal_idx]
+    return optimal_threshold, optimal_tpr, optimal_fpr
 
 

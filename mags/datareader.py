@@ -55,6 +55,10 @@ class DataReader:
     dropfield_df = self.load_dropfile()
 
     self.seginfo = self.conf['seg_info']
+    try: 
+      self.intinfo = self.conf['int_info']
+    except:
+      self.intinfo = {}
 
     self.plateinfo = PlateInfo(self.conf, dropfield_df=dropfield_df)
 
@@ -74,6 +78,12 @@ class DataReader:
 
   def get_max_im(self, iminfo, object_type, z_lst=None, marker=None, data_source='raw'):
     """Max projection of image using the planes specified for segmentation (default)"""
+    if object_type in self.seginfo:
+      stackinfo = self.seginfo
+    elif object_type in self.intinfo:
+      stackinfo = self.intinfo
+    else:
+      raise ValueError('{} not found in config'.format(object_type))
 
     if data_source == 'raw':
       readim = self.data_impath.readim
@@ -81,10 +91,10 @@ class DataReader:
       readim = self.wellpreview_impath.readim
 
     if z_lst is None:
-      z_lst = self.seginfo[object_type]['zplanes']
+      z_lst = stackinfo[object_type]['zplanes']
 
     if marker is None:
-      ch_lst = self.plateinfo.markers[self.seginfo[object_type]['marker']]
+      ch_lst = self.plateinfo.markers[stackinfo[object_type]['marker']]
     else:
       ch_lst = self.plateinfo.markers[marker]
 
@@ -287,6 +297,9 @@ class Well:
       return True
     else:
       return False
+
+  def __str__(self):
+    return('Well {:s}{:02d}'.format(self.row, self.col))
 
 class WellInfo(Well):
   """
@@ -702,4 +715,10 @@ class PlateInfo:
       raise ValueError('Incorrect platemap format')
 
     return plate_index[platemap]
+
+  def print_well_list(self):
+    for well in self.wells:
+      well_info = well.printinfo()
+      treatment = self.get_well_treatment(well)
+      print('{} treatment: {}'.format(well_info, treatment))
 

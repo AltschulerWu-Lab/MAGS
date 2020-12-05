@@ -44,9 +44,15 @@ def convert_to_sequence(start, num, inc=1):
   """Given start number, size of list, and step size: return list"""
   return list(range(start, start + inc*num, inc))
 
-def get_config_path(prefix, subdir=''):
+def get_config_path(prefix, subdir='', local=False):
   """Return path to config file given plate folder, assuming default setup"""
-  return os.path.join(prefix, subdir, 'config', 'datainfo.yml')
+
+  if local:
+    fname = 'datainfo_local.yml'
+  else:
+    fname = 'datainfo.yml'
+
+  return os.path.join(prefix, subdir, 'config', fname)
 
 def get_cols(platetype):
   """Get list of columns for platetype"""

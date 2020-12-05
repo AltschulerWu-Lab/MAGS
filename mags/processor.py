@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+from skimage import filters, measure
 import yaml
 import logging
 
@@ -82,6 +83,28 @@ class PlateSegmentation:
       wp = WellSegmentation(self.dreader, well, seg_params, object_type)
       wp.run(plot=plot)
 
+  def run_well(self, object_type, well_num, plot=False): 
+    """
+    Runs segmentation on plate
+    
+    Args:
+      object_type (str): object to segment (e.g. dna, edu, crypt, muc2)
+    """
+    
+    seg_params = self.get_seg_params(object_type)
+
+    # self.logger.notset(object_type, '\n', seg_params)
+
+    if isinstance(well_num, int):
+      well = self.dreader.plateinfo.wells[well_num]
+    else:
+      well = well_num
+
+    wp = WellSegmentation(self.dreader, well, seg_params, object_type)
+    wp.run(plot=plot)
+
+    return well, object_type
+
   def run_all(self):
     """
     Runs all object segmentation on plate
@@ -130,7 +153,7 @@ class WellSegmentation:
     self.object_type = object_type
 
     self.fields_iminfo = self.dreader.plateinfo.field_iterator(wells=[well])
-
+  
     seginfo = self.dreader.seginfo[object_type]
     self.segmentor = segmentor_dic[object_type]
 
@@ -167,7 +190,7 @@ class FeatureExtraction:
       image of that object type
   """
 
-  def __init__(self, dreader):
+  def __init__(self, dreader, seg_params_path=None):
     """
     Loads attributes
 
@@ -181,6 +204,11 @@ class FeatureExtraction:
     self.object_lst = self.dreader.seginfo.keys()
 
     self.logger = logging.getLogger()
+
+    if seg_params_path is not None:
+      with open(seg_params_path) as f:
+        self.seg_params = yaml.safe_load(f.read())
+
 
 
   def count_num(self, fld, object_type):
@@ -203,12 +231,73 @@ class FeatureExtraction:
     elif isinstance(fld, int):
       return fld
 
+  def count_positive(self, fld, object_type, intensity_im, thresh):
+    """
+    Counts number of objects in a well. In the base case, this involves adding the
+    counts in all fields. If fields are dropped, those fields are ignored. If fields
+    have a substitute count, the substitute count is used instead.
+
+    Args:
+      well (Well): well to tally 
+      object_type (str): object type to count
+
+    Returns:
+      int: number of objects of object_type in well
+    """
+
+    if isinstance(fld, ImageInfo):
+      obj_seg = self.dreader.get_objects_im(fld, object_type)
+      rp = measure.regionprops(obj_seg, intensity_image=intensity_im)
+      avg_ints = np.array([r.mean_intensity for r in rp])
+
+      pos_count = sum(avg_ints>thresh)
+
+      return pos_count
+
+    elif isinstance(fld, int):
+      return fld
+
   def more_feat_fn(self, feat_type):
     feat_fn = {
-      'stemedu_num': self.count_stem_edu # edu+ stem cells
+      'stemedu_num': self.count_stem_edu, # edu+ stem cells
+      'ki67_num': self.count_ki67,
+      'fabp1_num': self.count_fabp1
       }
 
     return feat_fn[feat_type]
+
+  def count_fabp1(self, iminfo):
+    '''Determine number of FABP1+ nuclei based on FABP1 intensity. Uses dna and edu segmentation'''
+
+    # get raw intensities
+    im_max_fabp1 = self.dreader.get_max_im(iminfo, 'enterocyte')
+
+    # get segmentation
+    seg_edu = self.dreader.get_objects_im(iminfo, 'edu')
+    seg_dna = self.dreader.get_objects_im(iminfo, 'dna')
+    seg_nonedu = imfuns.overlap_regions(seg_dna, seg_edu==0, 0.5)
+
+    # calculate mean fabp1 intensities
+    rp_nonedu = measure.regionprops(seg_nonedu, intensity_image=im_max_fabp1)
+
+    fabp1_nonedu = [r.mean_intensity for r in rp_nonedu]
+
+    # calculate threshold
+    well_treatment = self.dreader.plateinfo.get_well_treatment(iminfo)[0]
+    thresh = self.seg_params['fabp1']['THRESH'][well_treatment]
+
+    # use threshold to identify fabp1+ non-edu cells (mature enterocytes)
+    labels_fabp1_pos = [r.label for r in rp_nonedu if r.mean_intensity>thresh]
+
+    fabp1_num = len(labels_fabp1_pos)
+
+    return fabp1_num
+
+
+  def count_ki67(self, fld):
+    im_max_ki67 = self.dreader.get_max_im(fld, 'ki67')
+    thresh = self.seg_params['ki67']['THRESH']
+    return self.count_positive(fld, 'dna', im_max_ki67, thresh)
 
   def count_stem_edu(self, fld):
     stem = self.dreader.objects_impath['stem'].readim(fld)
